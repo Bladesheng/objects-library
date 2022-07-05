@@ -1,29 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library</title>
-  <link rel="stylesheet" href="./css/style.css">
-  <script src="app.js" defer></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-  </style>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="app.js" defer></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+    </style>
 </head>
 <body>
+
+  <div class="modalWrapper">
+    <form action="" method="post">
+      <h2>Add New Book</h2>
+
+      <div>
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="The Hobbit" required>
+      </div>
+
+      <div>
+        <label for="author">Author</label>
+        <input type="text" id="author" placeholder="J.R.R. Tolkien" required>
+      </div>  
+
+      <div>
+        <label for="pages">Number of pages</label>
+        <input type="number" id="pages" placeholder="300" required>
+      </div>
+
+      <label for="read" class="read">
+        <span>Have you read the book?</span>
+        <div class="round">
+          <input type="checkbox" id="read">
+          <label for="read"></label>
+        </div>
+      </label>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+
   <header>
     <h1>Library</h1>
   </header>
 
 
   <main>
+    
     <button class="newBookBtn">
       <svg style="width:24px;height:24px" viewBox="0 0 24 24">
         <path fill="currentColor" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
       </svg>
       <span>New book</span>
     </button>
+
 
     <div class="gridWrapper">
 
@@ -32,17 +67,13 @@
         <p>J.R.R. Tolkien</p>
         <p>295 Pages</p>
         <div class="buttonsWrapper">
-          <button class="read">
-            <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
-            </svg>
 
-            <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-            </svg>
-          </button>
+          <div class="round">
+            <input type="checkbox" id="read The Hobbit">
+            <label for="read The Hobbit"></label>
+          </div>
+
           <button class="remove">
-
             <svg style="width:24px;height:24px" viewBox="0 0 24 24">
               <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
             </svg>
