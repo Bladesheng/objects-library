@@ -11,11 +11,34 @@ function Book(title, author, pages, read) {
   }
 }
 
+
 function addBookToLibrary(book) {
   myLibrary.push(book);
 
   // create the html element
   createBookCard(book.title, book.author, book.pages, book.read);
+}
+
+
+function removeBook(bookElement) {
+  const bookName = bookElement.id;
+
+  myLibrary.forEach((book, index) => {
+    if (book.title === bookName) {
+      myLibrary.splice(index, 1);
+    }
+  })
+
+  bookElement.remove();
+}
+
+
+function toggleRead(bookName) {
+  myLibrary.forEach((book, index) => {
+    if (book.title === bookName) {
+      myLibrary[index].read = !myLibrary[index].read;
+    }
+  })
 }
 
 
@@ -44,7 +67,12 @@ function createBookCard(title, author, pages, read) {
   const readCheckbox = document.createElement("input");
   readCheckbox.type = "checkbox";
   readCheckbox.id = `read ${title}`;
+  // check the checkbox if user selected read in modal before
   if (read) {readCheckbox.checked = true};
+  // toggling read status of the object with the checkbox
+  readCheckbox.addEventListener("click", () => {  
+    toggleRead(bookCard.id);
+  })
   round.appendChild(readCheckbox);
 
   const readCheckboxLabel = document.createElement("label");
@@ -53,6 +81,9 @@ function createBookCard(title, author, pages, read) {
 
   const removeBtn = document.createElement("button");
   removeBtn.classList.add("remove");
+  removeBtn.addEventListener("click", () => {
+    removeBook(bookCard);
+  })
   buttonsWrapper.appendChild(removeBtn);
 
 
@@ -107,5 +138,7 @@ form.addEventListener("submit", (e) => {
 })
 
 
-
-addBookToLibrary(new Book("The Hobbit", "J.R.R. Tolkien", "295", true));
+// for testing
+// addBookToLibrary(new Book("The Hobbit", "J.R.R. Tolkien", "295", true));
+// addBookToLibrary(new Book("Night Watch", "Terry Pratchett", "432", true));
+// addBookToLibrary(new Book("50 Ways To Eat Cock", "Adrienne Hew", "166", false));
