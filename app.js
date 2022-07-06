@@ -1,4 +1,20 @@
-let myLibrary = [];
+let myLibrary;
+
+if (localStorage.getItem("myLibrary") === null) {
+  myLibrary = [];
+}
+else {
+  myLibrary = JSON.parse(localStorage.getItem("myLibrary"));
+  myLibrary.forEach((book) => {
+    createBookCard(book);
+  })
+}
+
+
+function updateLocalStorage() {
+  localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+}
+
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -14,9 +30,11 @@ function Book(title, author, pages, read) {
 
 function addBookToLibrary(book) {
   myLibrary.push(book);
-
+  
   // create the html element
-  createBookCard(book.title, book.author, book.pages, book.read);
+  createBookCard(book);
+
+  updateLocalStorage();
 }
 
 
@@ -30,6 +48,8 @@ function removeBook(bookElement) {
   })
 
   bookElement.remove();
+
+  updateLocalStorage();
 }
 
 
@@ -39,11 +59,18 @@ function toggleRead(bookName) {
       myLibrary[index].read = !myLibrary[index].read;
     }
   })
+
+  updateLocalStorage();
 }
 
 
 // constructs the new html card
-function createBookCard(title, author, pages, read) {
+function createBookCard(book) {
+  const title = book.title;
+  const author = book.author;
+  const pages = book.pages;
+  const read = book.read;
+
   const gridWrapper = document.querySelector(".gridWrapper");
 
   const bookCard = document.createElement("div");
