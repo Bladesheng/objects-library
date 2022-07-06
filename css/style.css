@@ -14,6 +14,14 @@ main .newBookBtn, .modalWrapper form button {
   cursor: pointer;
 }
 
+main .newBookBtn:hover, .modalWrapper form button:hover {
+  filter: brightness(1.1);
+}
+
+main .newBookBtn:focus, .modalWrapper form button:focus {
+  filter: brightness(1.3);
+}
+
 body {
   font-family: "Roboto", sans-serif;
   color: #e1e1e1;
@@ -91,6 +99,9 @@ body {
   position: absolute;
   left: 0;
   top: 0;
+}
+.modalWrapper form .read .round label:hover {
+  filter: brightness(1.1);
 }
 .modalWrapper form .read .round label::after {
   content: "";
@@ -189,6 +200,9 @@ main .gridWrapper .bookCard .buttonsWrapper .round label {
   left: 0;
   top: 0;
 }
+main .gridWrapper .bookCard .buttonsWrapper .round label:hover {
+  filter: brightness(1.1);
+}
 main .gridWrapper .bookCard .buttonsWrapper .round label::after {
   content: "";
   border: 2px solid rgb(48, 48, 48);
@@ -221,6 +235,9 @@ main .gridWrapper .bookCard .buttonsWrapper button {
 }
 main .gridWrapper .bookCard .buttonsWrapper button svg {
   height: 1.5rem;
+}
+main .gridWrapper .bookCard .buttonsWrapper button svg:hover {
+  filter: brightness(1.1);
 }
 
 footer {

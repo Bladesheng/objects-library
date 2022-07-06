@@ -23,6 +23,12 @@ $color-dark: rgb(24, 26, 27);
   font-size: 1rem;
   cursor: pointer;
 }
+%mainButtonsShared:hover {
+  filter: brightness(1.1);
+}
+%mainButtonsShared:focus {
+  filter: brightness(1.3);
+}
 
 
 // custom rounded checkbox
@@ -39,6 +45,9 @@ $color-dark: rgb(24, 26, 27);
     position: absolute;       
     left: 0;
     top: 0;
+  }
+  label:hover {
+    filter: brightness(1.1);
   }
   label::after { // the tick
     content: "";
@@ -246,6 +255,9 @@ main {
 
           svg {
             height: 1.5rem;
+          }
+          svg:hover {
+            filter: brightness(1.1);
           }
         }
       }
