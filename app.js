@@ -68,7 +68,7 @@ function toggleRead(bookName) {
 function createBookCard(book) {
   const title = book.title;
   const author = book.author;
-  const pages = book.pages;
+  const pages = book.pages + " pages";
   const read = book.read;
 
   const gridWrapper = document.querySelector(".gridWrapper");
