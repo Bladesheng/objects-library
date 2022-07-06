@@ -52,7 +52,7 @@ $color-dark: rgb(24, 26, 27);
 
     position: absolute;
     top: 5px;
-    left: 4px;
+    left: 3.5px;
   }
   input[type="checkbox"] {
     visibility: hidden; // hides the default checkbox
@@ -242,7 +242,11 @@ main {
           background: none;
 
           color: $font-color-primary;
-          cursor: pointer; 
+          cursor: pointer;
+
+          svg {
+            height: 1.5rem;
+          }
         }
       }
     }

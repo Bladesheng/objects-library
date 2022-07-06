@@ -103,7 +103,7 @@ body {
   opacity: 0;
   position: absolute;
   top: 5px;
-  left: 4px;
+  left: 3.5px;
 }
 .modalWrapper form .read .round input[type=checkbox] {
   visibility: hidden;
@@ -200,7 +200,7 @@ main .gridWrapper .bookCard .buttonsWrapper .round label::after {
   opacity: 0;
   position: absolute;
   top: 5px;
-  left: 4px;
+  left: 3.5px;
 }
 main .gridWrapper .bookCard .buttonsWrapper .round input[type=checkbox] {
   visibility: hidden;
@@ -218,6 +218,9 @@ main .gridWrapper .bookCard .buttonsWrapper button {
   background: none;
   color: #e1e1e1;
   cursor: pointer;
+}
+main .gridWrapper .bookCard .buttonsWrapper button svg {
+  height: 1.5rem;
 }
 
 footer {
