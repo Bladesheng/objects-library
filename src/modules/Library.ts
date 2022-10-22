@@ -7,13 +7,23 @@ export const Library = (() => {
     books.push(book);
   }
 
-  function selectBook(selectedIndex: number) {
-    return books[selectedIndex];
+  function selectBook(bookIndex: number) {
+    return books[bookIndex];
+  }
+
+  function removeBook(bookIndex: number) {
+    books.splice(bookIndex, 1);
+  }
+
+  function reset() {
+    books.length = 0;
   }
 
   return {
     books,
     addBook,
-    selectBook
+    selectBook,
+    removeBook,
+    reset
   };
 })();
