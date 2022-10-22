@@ -1,7 +1,5 @@
 import { Book } from "./Book";
 
-//type IBook = typeof Book;
-
 export const Library = (() => {
   const books: Book[] = [];
 
@@ -9,8 +7,13 @@ export const Library = (() => {
     books.push(book);
   }
 
+  function selectBook(selectedIndex: number) {
+    return books[selectedIndex];
+  }
+
   return {
     books,
-    addBook
+    addBook,
+    selectBook
   };
 })();

@@ -551,6 +551,9 @@ var Book = /** @class */ (function () {
     Book.prototype.info = function () {
         return "".concat(this.title, " by ").concat(this.author, ", ").concat(this.pages, " pages, read: ").concat(this.read);
     };
+    Book.prototype.toggleRead = function () {
+        this.read = !this.read;
+    };
     return Book;
 }());
 
