@@ -1,10 +1,10 @@
 import "./styles/style.scss";
+import { Book } from "./modules/Book";
+import { Library } from "./modules/Library";
 
-let myLibrary;
+const myLibrary: any[] = [];
 
-if (localStorage.getItem("myLibrary") === null) {
-  myLibrary = [];
-} else {
+if (localStorage.getItem("myLibrary") !== null) {
   myLibrary = JSON.parse(localStorage.getItem("myLibrary"));
   myLibrary.forEach((book) => {
     createBookCard(book);
@@ -15,18 +15,7 @@ function updateLocalStorage() {
   localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
 }
 
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-
-  this.info = function () {
-    return `${title} by ${author}, ${pages} pages, read: ${read}`;
-  };
-}
-
-function addBookToLibrary(book) {
+function addBookToLibrary(book: typeof Book) {
   myLibrary.push(book);
 
   // create the html element
