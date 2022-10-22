@@ -9,4 +9,8 @@ export class Book {
   info() {
     return `${this.title} by ${this.author}, ${this.pages} pages, read: ${this.read}`;
   }
+
+  toggleRead() {
+    this.read = !this.read;
+  }
 }
