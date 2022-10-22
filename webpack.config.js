@@ -6,27 +6,27 @@ module.exports = {
   // devtool: "source-map",
   entry: "./src/index.ts",
   devServer: {
-    static: "./dist",
+    static: "./dist"
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
-    }),
+      template: "./src/index.html"
+    })
   ],
   resolve: {
-    extensions: [".tsx", ".ts", ".js", "..."],
+    extensions: [".tsx", ".ts", ".js", "..."]
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: ["ts-loader"],
+        use: ["ts-loader"]
       },
       {
         test: /\.js$/,
         loader: "source-map-loader",
-        enforce: "pre",
+        enforce: "pre"
       },
       {
         test: /\.s[ac]ss$/i,
@@ -38,22 +38,22 @@ module.exports = {
           // Translates CSS into CommonJS
           "css-loader",
           // Compiles Sass to CSS
-          "sass-loader",
-        ],
+          "sass-loader"
+        ]
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
         type: "asset/resource",
         generator: {
           // put all generated assets into "dist/"
-          filename: "assets/[name][ext]",
-        },
-      },
-    ],
+          filename: "assets/[name][ext]"
+        }
+      }
+    ]
   },
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist"),
-    clean: true,
-  },
+    clean: true
+  }
 };
