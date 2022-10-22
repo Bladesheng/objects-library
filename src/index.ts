@@ -55,7 +55,6 @@ function createBookCard(book: Book) {
 
   const readCheckbox = document.createElement("input");
   readCheckbox.type = "checkbox";
-  readCheckbox.id = `read ${title}`;
   // check the checkbox if user selected read in modal before
   if (read) {
     readCheckbox.checked = true;

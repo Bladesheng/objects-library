@@ -129,7 +129,8 @@ body {
       color: rgb(200, 200, 200);
     }
 
-    input[type="text"],
+    input#title,
+    input#author,
     input[type="number"] {
       display: block;
       border: none;
