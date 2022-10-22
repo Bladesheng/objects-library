@@ -1,4 +1,5 @@
 import { Book } from "./Book";
+import { Storage } from "./Storage";
 
 export const Library = (() => {
   const books: Book[] = [];
@@ -19,11 +20,16 @@ export const Library = (() => {
     books.length = 0;
   }
 
+  function saveToLocalstorage() {
+    Storage.books = books;
+  }
+
   return {
     books,
     addBook,
     selectBook,
     removeBook,
-    reset
+    reset,
+    saveToLocalstorage
   };
 })();

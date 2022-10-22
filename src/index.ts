@@ -1,55 +1,34 @@
 import "./styles/style.scss";
 import { Book } from "./modules/Book";
 import { Library } from "./modules/Library";
+import { Storage } from "./modules/Storage";
 
-const myLibrary: any[] = [];
-
-if (localStorage.getItem("myLibrary") !== null) {
-  myLibrary = JSON.parse(localStorage.getItem("myLibrary"));
-  myLibrary.forEach((book) => {
-    createBookCard(book);
-  });
-}
-
-function updateLocalStorage() {
-  localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
-}
-
-function addBookToLibrary(book: typeof Book) {
-  myLibrary.push(book);
-
-  // create the html element
+Storage.init();
+for (const book of Library.books) {
   createBookCard(book);
-
-  updateLocalStorage();
 }
 
-function removeBook(bookElement) {
-  const bookName = bookElement.id;
-
-  myLibrary.forEach((book, index) => {
-    if (book.title === bookName) {
-      myLibrary.splice(index, 1);
-    }
-  });
-
-  bookElement.remove();
-
-  updateLocalStorage();
+function addBook(newBook: Book) {
+  Library.addBook(newBook);
+  Library.saveToLocalstorage();
+  createBookCard(newBook);
 }
 
-function toggleRead(bookName) {
-  myLibrary.forEach((book, index) => {
-    if (book.title === bookName) {
-      myLibrary[index].read = !myLibrary[index].read;
-    }
-  });
+function removeBook(bookIndex: number) {
+  Library.removeBook(bookIndex);
+  Library.saveToLocalstorage();
+}
 
-  updateLocalStorage();
+function toggleRead(bookIndex: number) {
+  const clickedBook = Library.selectBook(bookIndex);
+
+  clickedBook.toggleRead();
+
+  Library.saveToLocalstorage();
 }
 
 // constructs the new html card
-function createBookCard(book) {
+function createBookCard(book: Book) {
   const title = book.title;
   const author = book.author;
   const pages = book.pages + " pages";
@@ -59,7 +38,6 @@ function createBookCard(book) {
 
   const bookCard = document.createElement("div");
   bookCard.classList.add("bookCard");
-  bookCard.id = title;
 
   for (const property of [title, author, pages]) {
     const paragraph = document.createElement("p");
@@ -84,7 +62,11 @@ function createBookCard(book) {
   }
   // toggling read status of the object with the checkbox
   readCheckbox.addEventListener("click", () => {
-    toggleRead(bookCard.id);
+    // get the book index from position of the element
+    const allBookElements = gridWrapper.children;
+    const bookIndex = Array.from(allBookElements).indexOf(bookCard);
+
+    toggleRead(bookIndex);
   });
   round.appendChild(readCheckbox);
 
@@ -95,7 +77,13 @@ function createBookCard(book) {
   const removeBtn = document.createElement("button");
   removeBtn.classList.add("remove");
   removeBtn.addEventListener("click", () => {
-    removeBook(bookCard);
+    // get the book index from position of the element
+    const allBookElements = gridWrapper.children;
+    const bookIndex = Array.from(allBookElements).indexOf(bookCard);
+
+    removeBook(bookIndex);
+
+    bookCard.remove();
   });
   buttonsWrapper.appendChild(removeBtn);
 
@@ -116,8 +104,8 @@ function createBookCard(book) {
   gridWrapper.appendChild(bookCard);
 }
 
-const modal = document.querySelector(".modalWrapper");
-const newBookBtn = document.querySelector(".newBookBtn");
+const modal: HTMLElement = document.querySelector(".modalWrapper");
+const newBookBtn: HTMLButtonElement = document.querySelector(".newBookBtn");
 
 // show modal when button is pressed
 newBookBtn.addEventListener("click", () => {
@@ -131,27 +119,26 @@ window.addEventListener("click", (e) => {
   }
 });
 
-const form = document.querySelector(".newBookForm");
-const titleInput = document.querySelector("#title");
-const authorInput = document.querySelector("#author");
-const pagesInput = document.querySelector("#pages");
-const readInput = document.querySelector("#read");
+const form: HTMLFormElement = document.querySelector(".newBookForm");
+const titleInput: HTMLInputElement = document.querySelector("#title");
+const authorInput: HTMLInputElement = document.querySelector("#author");
+const pagesInput: HTMLInputElement = document.querySelector("#pages");
+const readInput: HTMLInputElement = document.querySelector("#read");
 
 form.addEventListener("submit", (e) => {
-  // prevents refreshing the page and losing everything
   e.preventDefault();
 
-  addBookToLibrary(
-    new Book(titleInput.value, authorInput.value, pagesInput.value, readInput.checked)
+  const newBook = new Book(
+    titleInput.value,
+    authorInput.value,
+    parseInt(pagesInput.value),
+    readInput.checked
   );
+
+  addBook(newBook);
 
   // resets form inputs and closes modal
   titleInput.value = authorInput.value = pagesInput.value = "";
   readInput.checked = false;
   modal.style.display = "none";
 });
-
-// for testing
-// addBookToLibrary(new Book("The Hobbit", "J.R.R. Tolkien", "295", true));
-// addBookToLibrary(new Book("Night Watch", "Terry Pratchett", "432", true));
-// addBookToLibrary(new Book("50 Ways To Eat Cock", "Adrienne Hew", "166", false));
