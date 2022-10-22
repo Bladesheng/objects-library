@@ -55,6 +55,13 @@ function createBookCard(book: Book) {
 
   const readCheckbox = document.createElement("input");
   readCheckbox.type = "checkbox";
+
+  // For correlating checkbox with input.
+  // Can't use only name, author or pages because there could be duplicate ID's.
+  // HTML doesn't like ID duplicates...
+  const randomID = `${title}${author}${read}${Math.floor(Math.random() * 1000000)}`;
+
+  readCheckbox.id = randomID;
   // check the checkbox if user selected read in modal before
   if (read) {
     readCheckbox.checked = true;
@@ -70,7 +77,7 @@ function createBookCard(book: Book) {
   round.appendChild(readCheckbox);
 
   const readCheckboxLabel = document.createElement("label");
-  readCheckboxLabel.setAttribute("for", `read ${title}`);
+  readCheckboxLabel.setAttribute("for", randomID);
   round.appendChild(readCheckboxLabel);
 
   const removeBtn = document.createElement("button");
