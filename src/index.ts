@@ -5,9 +5,102 @@ import { Storage } from "./modules/Storage";
 
 // initialize firebase
 import { initializeApp } from "firebase/app";
-import { getFirebaseConfig } from "./firebase-config.js";
+
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+  signOut,
+  onAuthStateChanged,
+  User
+} from "firebase/auth";
+
+import { getFirebaseConfig } from "./firebase-config";
+
+async function signIn() {
+  // Sign in Firebase using popup auth and Google as the identity provider.
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(getAuth(), provider);
+}
+
+function signOutUser() {
+  signOut(getAuth());
+}
+
+// Returns the signed-in user's profile Pic URL.
+function getProfilePicUrl() {
+  return getAuth().currentUser.photoURL || "/images/profile_placeholder.png";
+}
+
+// Returns the signed-in user's display name.
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+
+// Returns true if a user is signed-in.
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+
+// Triggers when the auth state change for instance when the user signs-in or signs-out.
+function authStateObserver(user: User) {
+  if (user) {
+    // User is signed in!
+    // Get the signed-in user's profile pic and name.
+    const profilePicUrl = getProfilePicUrl();
+    const userName = getUserName();
+
+    // Set the user's profile pic and name.
+    userPicElement.src = addSizeToGoogleProfilePic(profilePicUrl);
+    userNameElement.textContent = userName;
+
+    // Show user's profile and sign-out button.
+    userNameElement.removeAttribute("hidden");
+    userPicElement.removeAttribute("hidden");
+    signOutButtonElement.removeAttribute("hidden");
+
+    // Hide sign-in button.
+    signInButtonElement.setAttribute("hidden", "true");
+  } else {
+    // User is signed out!
+    // Hide user's profile and sign-out button.
+    userNameElement.setAttribute("hidden", "true");
+    userPicElement.setAttribute("hidden", "true");
+    signOutButtonElement.setAttribute("hidden", "true");
+
+    // Show sign-in button.
+    signInButtonElement.removeAttribute("hidden");
+  }
+}
+
+// Adds a size to Google Profile pics URLs.
+function addSizeToGoogleProfilePic(url: string) {
+  if (url.indexOf("googleusercontent.com") !== -1 && url.indexOf("?") === -1) {
+    return url + "?sz=150";
+  }
+  return url;
+}
+
+function initFirebaseAuth() {
+  // Listen to auth state changes.
+  onAuthStateChanged(getAuth(), authStateObserver);
+}
+
+// Shortcuts to DOM Elements.
+const signInButtonElement = document.querySelector("button.signIn");
+const userPicElement: HTMLImageElement = document.querySelector("img.userPic");
+const userNameElement = document.querySelector("span.userName");
+const signOutButtonElement = document.querySelector("button.signOut");
+
+signInButtonElement.addEventListener("click", signIn);
+signOutButtonElement.addEventListener("click", signOutUser);
+
+//console.log(userPicElement);
+
 const firebaseAppConfig = getFirebaseConfig();
 initializeApp(firebaseAppConfig);
+
+initFirebaseAuth();
 
 // App
 Storage.init();

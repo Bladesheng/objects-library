@@ -1,11 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
 $font-stack: "Roboto", sans-serif;
 $font-color-primary: rgb(225, 225, 225);
 $font-color-secondary: rgb(208, 158, 83);
@@ -15,6 +9,21 @@ $font-color-primary: #e1e1e1;
 $color-primary: rgb(34, 36, 38);
 $color-secondary: rgb(48, 48, 48);
 $color-dark: rgb(24, 26, 27);
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+button {
+  font-family: $font-stack;
+
+  border: none;
+  background: none;
+
+  cursor: pointer;
+}
 
 %mainButtonsShared {
   padding: 0.5em;
@@ -186,6 +195,31 @@ header {
 
   background-color: $color-dark;
   box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.7);
+
+  display: flex;
+  justify-content: space-between;
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    img {
+      height: 2rem;
+      border-radius: 50%;
+    }
+
+    .signIn,
+    .signOut {
+      color: $font-color-primary;
+      font-size: 0.9rem;
+      font-weight: 500;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
 }
 
 main {
