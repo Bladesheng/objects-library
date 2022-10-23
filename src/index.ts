@@ -3,7 +3,9 @@ import { Book } from "./modules/Book";
 
 import { initializeApp } from "firebase/app";
 
-import { saveBookFS, removeBookFS, toggleReadFS } from "./modules/firestoreAPI";
+import { getFirestore } from "firebase/firestore";
+
+import { saveBookFS, removeBookFS, toggleReadFS, getBooksFS } from "./modules/firestoreAPI";
 
 import {
   GoogleAuthProvider,
@@ -41,10 +43,18 @@ function isUserSignedIn() {
   return !!getAuth().currentUser;
 }
 
+let userID: string;
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 function authStateObserver(user: User) {
   if (user) {
     // User is signed in!
+
+    // save the user id for future use
+    userID = user.uid;
+
+    // reconstruct all saved books from firestore
+    reconstructBooks();
+
     // Get the signed-in user's profile pic and name.
     const profilePicUrl = getProfilePicUrl();
     const userName = getUserName();
@@ -62,6 +72,10 @@ function authStateObserver(user: User) {
     signInButtonElement.setAttribute("hidden", "true");
   } else {
     // User is signed out!
+
+    // remove all book elements
+    removeBookElements();
+
     // Hide user's profile and sign-out button.
     userNameElement.setAttribute("hidden", "true");
     userPicElement.setAttribute("hidden", "true");
@@ -95,11 +109,37 @@ signInButtonElement.addEventListener("click", signIn);
 signOutButtonElement.addEventListener("click", signOutUser);
 
 const firebaseAppConfig = getFirebaseConfig();
-initializeApp(firebaseAppConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseAppConfig);
+
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
 
 initFirebaseAuth();
 
 // App
+
+// reconstruct all books from Cloud Firestore
+async function reconstructBooks() {
+  const retrievedBooks = await getBooksFS(db, userID);
+
+  const reconstructedBooks: Book[] = [];
+
+  for (const book of retrievedBooks) {
+    const reconstructedBook = new Book(book.title, book.author, book.pages, book.read, book.key);
+    reconstructedBooks.push(reconstructedBook);
+  }
+
+  for (const book of reconstructedBooks) {
+    createBookCardElement(book);
+  }
+}
+
+function removeBookElements() {
+  const books = document.querySelector(".gridWrapper");
+
+  books.replaceChildren();
+}
 
 // constructs the new html card
 function createBookCardElement(book: Book) {
@@ -208,7 +248,7 @@ form.addEventListener("submit", (e) => {
 
   createBookCardElement(newBook);
 
-  saveBookFS(newBook);
+  saveBookFS(newBook, db, userID);
 
   // resets form inputs and closes modal
   titleInput.value = authorInput.value = pagesInput.value = "";

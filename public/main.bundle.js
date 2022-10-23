@@ -33214,6 +33214,7 @@ var Book = /** @class */ (function () {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getBooksFS": () => (/* binding */ getBooksFS),
 /* harmony export */   "removeBookFS": () => (/* binding */ removeBookFS),
 /* harmony export */   "saveBookFS": () => (/* binding */ saveBookFS),
 /* harmony export */   "toggleReadFS": () => (/* binding */ toggleReadFS)
@@ -33257,14 +33258,14 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 };
 
 // save new book to Firestore
-function saveBookFS(book) {
+function saveBookFS(book, db, userID) {
     return __awaiter(this, void 0, void 0, function () {
-        var error_1;
+        var docRef, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.addDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.getFirestore)(), "books"), {
+                    return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.addDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, "books-" + userID), {
                             title: book.title,
                             author: book.author,
                             pages: book.pages,
@@ -33272,7 +33273,8 @@ function saveBookFS(book) {
                             key: book.key
                         })];
                 case 1:
-                    _a.sent();
+                    docRef = _a.sent();
+                    console.log("Document written with ID: ", docRef.id);
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
@@ -33295,7 +33297,25 @@ function removeBookFS(key) {
         return [2 /*return*/];
     }); });
 }
-// return all books from Firestore
+// return all books saved in Firestore
+function getBooksFS(db, userID) {
+    return __awaiter(this, void 0, void 0, function () {
+        var querySnapshot, retrievedBooks;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.getDocs)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, "books-" + userID))];
+                case 1:
+                    querySnapshot = _a.sent();
+                    retrievedBooks = [];
+                    querySnapshot.forEach(function (doc) {
+                        var book = doc.data(); // the object key:value pairs in JSON, no methods
+                        retrievedBooks.push(book);
+                    });
+                    return [2 /*return*/, retrievedBooks];
+            }
+        });
+    });
+}
 
 
 /***/ }),
@@ -35333,9 +35353,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _styles_style_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./styles/style.scss */ "./src/styles/style.scss");
 /* harmony import */ var _modules_Book__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/Book */ "./src/modules/Book.ts");
 /* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! firebase/app */ "./node_modules/firebase/app/dist/index.esm.js");
-/* harmony import */ var _modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/firestoreAPI */ "./src/modules/firestoreAPI.ts");
-/* harmony import */ var firebase_auth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! firebase/auth */ "./node_modules/firebase/auth/dist/index.esm.js");
-/* harmony import */ var _firebase_config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./firebase-config */ "./src/firebase-config.ts");
+/* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! firebase/firestore */ "./node_modules/firebase/firestore/dist/index.esm.js");
+/* harmony import */ var _modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/firestoreAPI */ "./src/modules/firestoreAPI.ts");
+/* harmony import */ var firebase_auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! firebase/auth */ "./node_modules/firebase/auth/dist/index.esm.js");
+/* harmony import */ var _firebase_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./firebase-config */ "./src/firebase-config.ts");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35378,14 +35399,15 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 
 
 
+
 function signIn() {
     return __awaiter(this, void 0, void 0, function () {
         var provider;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    provider = new firebase_auth__WEBPACK_IMPORTED_MODULE_4__.GoogleAuthProvider();
-                    return [4 /*yield*/, (0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.signInWithPopup)((0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.getAuth)(), provider)];
+                    provider = new firebase_auth__WEBPACK_IMPORTED_MODULE_5__.GoogleAuthProvider();
+                    return [4 /*yield*/, (0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.signInWithPopup)((0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.getAuth)(), provider)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -35394,24 +35416,29 @@ function signIn() {
     });
 }
 function signOutUser() {
-    (0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.signOut)((0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.getAuth)());
+    (0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.signOut)((0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.getAuth)());
 }
 // Returns the signed-in user's profile Pic URL.
 function getProfilePicUrl() {
-    return (0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.getAuth)().currentUser.photoURL || "/images/profile_placeholder.png";
+    return (0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.getAuth)().currentUser.photoURL || "/images/profile_placeholder.png";
 }
 // Returns the signed-in user's display name.
 function getUserName() {
-    return (0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.getAuth)().currentUser.displayName;
+    return (0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.getAuth)().currentUser.displayName;
 }
 // Returns true if a user is signed-in.
 function isUserSignedIn() {
-    return !!(0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.getAuth)().currentUser;
+    return !!(0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.getAuth)().currentUser;
 }
+var userID;
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 function authStateObserver(user) {
     if (user) {
         // User is signed in!
+        // save the user id for future use
+        userID = user.uid;
+        // reconstruct all saved books from firestore
+        reconstructBooks();
         // Get the signed-in user's profile pic and name.
         var profilePicUrl = getProfilePicUrl();
         var userName = getUserName();
@@ -35427,6 +35454,8 @@ function authStateObserver(user) {
     }
     else {
         // User is signed out!
+        // remove all book elements
+        removeBookElements();
         // Hide user's profile and sign-out button.
         userNameElement.setAttribute("hidden", "true");
         userPicElement.setAttribute("hidden", "true");
@@ -35444,7 +35473,7 @@ function addSizeToGoogleProfilePic(url) {
 }
 function initFirebaseAuth() {
     // Listen to auth state changes.
-    (0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.onAuthStateChanged)((0,firebase_auth__WEBPACK_IMPORTED_MODULE_4__.getAuth)(), authStateObserver);
+    (0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.onAuthStateChanged)((0,firebase_auth__WEBPACK_IMPORTED_MODULE_5__.getAuth)(), authStateObserver);
 }
 // Shortcuts to DOM Elements.
 var signInButtonElement = document.querySelector("button.signIn");
@@ -35453,10 +35482,41 @@ var userNameElement = document.querySelector("span.userName");
 var signOutButtonElement = document.querySelector("button.signOut");
 signInButtonElement.addEventListener("click", signIn);
 signOutButtonElement.addEventListener("click", signOutUser);
-var firebaseAppConfig = (0,_firebase_config__WEBPACK_IMPORTED_MODULE_5__.getFirebaseConfig)();
-(0,firebase_app__WEBPACK_IMPORTED_MODULE_2__.initializeApp)(firebaseAppConfig);
+var firebaseAppConfig = (0,_firebase_config__WEBPACK_IMPORTED_MODULE_6__.getFirebaseConfig)();
+// Initialize Firebase
+var app = (0,firebase_app__WEBPACK_IMPORTED_MODULE_2__.initializeApp)(firebaseAppConfig);
+// Initialize Cloud Firestore and get a reference to the service
+var db = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_3__.getFirestore)(app);
 initFirebaseAuth();
 // App
+// reconstruct all books from Cloud Firestore
+function reconstructBooks() {
+    return __awaiter(this, void 0, void 0, function () {
+        var retrievedBooks, reconstructedBooks, _i, retrievedBooks_1, book, reconstructedBook, _a, reconstructedBooks_1, book;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.getBooksFS)(db, userID)];
+                case 1:
+                    retrievedBooks = _b.sent();
+                    reconstructedBooks = [];
+                    for (_i = 0, retrievedBooks_1 = retrievedBooks; _i < retrievedBooks_1.length; _i++) {
+                        book = retrievedBooks_1[_i];
+                        reconstructedBook = new _modules_Book__WEBPACK_IMPORTED_MODULE_1__.Book(book.title, book.author, book.pages, book.read, book.key);
+                        reconstructedBooks.push(reconstructedBook);
+                    }
+                    for (_a = 0, reconstructedBooks_1 = reconstructedBooks; _a < reconstructedBooks_1.length; _a++) {
+                        book = reconstructedBooks_1[_a];
+                        createBookCardElement(book);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function removeBookElements() {
+    var books = document.querySelector(".gridWrapper");
+    books.replaceChildren();
+}
 // constructs the new html card
 function createBookCardElement(book) {
     var title = book.title;
@@ -35488,7 +35548,7 @@ function createBookCardElement(book) {
     }
     // toggling read status of the object with the checkbox
     readCheckbox.addEventListener("click", function () {
-        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_3__.toggleReadFS)(key);
+        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.toggleReadFS)(key);
     });
     round.appendChild(readCheckbox);
     var readCheckboxLabel = document.createElement("label");
@@ -35498,7 +35558,7 @@ function createBookCardElement(book) {
     removeBtn.classList.add("remove");
     removeBtn.addEventListener("click", function () {
         bookCard.remove();
-        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_3__.removeBookFS)(key);
+        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.removeBookFS)(key);
     });
     buttonsWrapper.appendChild(removeBtn);
     var SVG_NS = "http://www.w3.org/2000/svg";
@@ -35533,7 +35593,7 @@ form.addEventListener("submit", function (e) {
     var key = "k" + Date.now();
     var newBook = new _modules_Book__WEBPACK_IMPORTED_MODULE_1__.Book(titleInput.value, authorInput.value, parseInt(pagesInput.value), readInput.checked, key);
     createBookCardElement(newBook);
-    (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_3__.saveBookFS)(newBook);
+    (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.saveBookFS)(newBook, db, userID);
     // resets form inputs and closes modal
     titleInput.value = authorInput.value = pagesInput.value = "";
     readInput.checked = false;
