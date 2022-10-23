@@ -3,12 +3,10 @@ export class Book {
     public title: string,
     public author: string,
     public pages: number,
-    public read: boolean
+    public read: boolean,
+    //public key: string = "k" + Date.now()
+    public key: string
   ) {}
-
-  info() {
-    return `${this.title} by ${this.author}, ${this.pages} pages, read: ${this.read}`;
-  }
 
   toggleRead() {
     this.read = !this.read;

@@ -1,10 +1,9 @@
 import "./styles/style.scss";
 import { Book } from "./modules/Book";
-import { Library } from "./modules/Library";
-import { Storage } from "./modules/Storage";
 
-// initialize firebase
 import { initializeApp } from "firebase/app";
+
+import { saveBookFS, removeBookFS, toggleReadFS } from "./modules/firestoreAPI";
 
 import {
   GoogleAuthProvider,
@@ -95,44 +94,20 @@ const signOutButtonElement = document.querySelector("button.signOut");
 signInButtonElement.addEventListener("click", signIn);
 signOutButtonElement.addEventListener("click", signOutUser);
 
-//console.log(userPicElement);
-
 const firebaseAppConfig = getFirebaseConfig();
 initializeApp(firebaseAppConfig);
 
 initFirebaseAuth();
 
 // App
-Storage.init();
-for (const book of Library.books) {
-  createBookCard(book);
-}
-
-function addBook(newBook: Book) {
-  Library.addBook(newBook);
-  Library.saveToLocalstorage();
-  createBookCard(newBook);
-}
-
-function removeBook(bookIndex: number) {
-  Library.removeBook(bookIndex);
-  Library.saveToLocalstorage();
-}
-
-function toggleRead(bookIndex: number) {
-  const clickedBook = Library.selectBook(bookIndex);
-
-  clickedBook.toggleRead();
-
-  Library.saveToLocalstorage();
-}
 
 // constructs the new html card
-function createBookCard(book: Book) {
+function createBookCardElement(book: Book) {
   const title = book.title;
   const author = book.author;
   const pages = book.pages + " pages";
   const read = book.read;
+  const key = book.key;
 
   const gridWrapper = document.querySelector(".gridWrapper");
 
@@ -156,40 +131,27 @@ function createBookCard(book: Book) {
   const readCheckbox = document.createElement("input");
   readCheckbox.type = "checkbox";
 
-  // For correlating checkbox with input.
-  // Can't use only name, author or pages because there could be duplicate ID's.
-  // HTML doesn't like ID duplicates...
-  const randomID = `${title}${author}${read}${Math.floor(Math.random() * 1000000)}`;
-
-  readCheckbox.id = randomID;
+  readCheckbox.id = key;
   // check the checkbox if user selected read in modal before
   if (read) {
     readCheckbox.checked = true;
   }
   // toggling read status of the object with the checkbox
   readCheckbox.addEventListener("click", () => {
-    // get the book index from position of the element
-    const allBookElements = gridWrapper.children;
-    const bookIndex = Array.from(allBookElements).indexOf(bookCard);
-
-    toggleRead(bookIndex);
+    toggleReadFS(key);
   });
   round.appendChild(readCheckbox);
 
   const readCheckboxLabel = document.createElement("label");
-  readCheckboxLabel.setAttribute("for", randomID);
+  readCheckboxLabel.setAttribute("for", key);
   round.appendChild(readCheckboxLabel);
 
   const removeBtn = document.createElement("button");
   removeBtn.classList.add("remove");
   removeBtn.addEventListener("click", () => {
-    // get the book index from position of the element
-    const allBookElements = gridWrapper.children;
-    const bookIndex = Array.from(allBookElements).indexOf(bookCard);
-
-    removeBook(bookIndex);
-
     bookCard.remove();
+
+    removeBookFS(key);
   });
   buttonsWrapper.appendChild(removeBtn);
 
@@ -234,14 +196,19 @@ const readInput: HTMLInputElement = document.querySelector("#read");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
+  const key = "k" + Date.now();
+
   const newBook = new Book(
     titleInput.value,
     authorInput.value,
     parseInt(pagesInput.value),
-    readInput.checked
+    readInput.checked,
+    key
   );
 
-  addBook(newBook);
+  createBookCardElement(newBook);
+
+  saveBookFS(newBook);
 
   // resets form inputs and closes modal
   titleInput.value = authorInput.value = pagesInput.value = "";

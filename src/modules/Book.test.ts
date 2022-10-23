@@ -1,14 +1,13 @@
 import { Book } from "./Book";
 
-test("Jest working", () => {
-  expect("xd").toBe("xd");
-});
-
 test("Create new Book instance", () => {
-  const hobbit = new Book("The Hobbit", "Tolkien", 420, true);
+  const hobbit = new Book("The Hobbit", "Tolkien", 420, true, "k694201337");
 
+  expect(hobbit.title).toBe("The Hobbit");
   expect(hobbit.author).toBe("Tolkien");
-  expect(hobbit.info()).toBe("The Hobbit by Tolkien, 420 pages, read: true");
+  expect(hobbit.pages).toBe(420);
+  expect(hobbit.read).toBe(true);
+  expect(hobbit.key).toBe("k694201337");
 });
 
 test("Change book from read to unread", () => {
