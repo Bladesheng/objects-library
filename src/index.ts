@@ -3,6 +3,13 @@ import { Book } from "./modules/Book";
 import { Library } from "./modules/Library";
 import { Storage } from "./modules/Storage";
 
+// initialize firebase
+import { initializeApp } from "firebase/app";
+import { getFirebaseConfig } from "./firebase-config.js";
+const firebaseAppConfig = getFirebaseConfig();
+initializeApp(firebaseAppConfig);
+
+// App
 Storage.init();
 for (const book of Library.books) {
   createBookCard(book);
