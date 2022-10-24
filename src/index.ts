@@ -192,7 +192,7 @@ function createBookCardElement(book: Book) {
   removeBtn.addEventListener("click", () => {
     bookCard.remove();
 
-    //removeBookFS(key);
+    removeBookFS(db, userID, book);
   });
   buttonsWrapper.appendChild(removeBtn);
 

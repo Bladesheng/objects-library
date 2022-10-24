@@ -33328,10 +33328,25 @@ function toggleReadFS(db, userID, book) {
     });
 }
 // remove book from Firestore
-function removeBookFS(db, userID, key) {
-    return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); });
+function removeBookFS(db, userID, book) {
+    return __awaiter(this, void 0, void 0, function () {
+        var error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.deleteDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.doc)(db, "userID-".concat(userID), book.key))];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_3 = _a.sent();
+                    console.error("Error deleting book in Firebase Database", error_3);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
 }
 
 
@@ -35576,7 +35591,7 @@ function createBookCardElement(book) {
     removeBtn.classList.add("remove");
     removeBtn.addEventListener("click", function () {
         bookCard.remove();
-        //removeBookFS(key);
+        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.removeBookFS)(db, userID, book);
     });
     buttonsWrapper.appendChild(removeBtn);
     var SVG_NS = "http://www.w3.org/2000/svg";

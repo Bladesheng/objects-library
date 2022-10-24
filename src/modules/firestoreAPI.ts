@@ -1,18 +1,11 @@
 import {
   Firestore,
-  addDoc,
   collection,
-  getDocs,
-
-  //
   doc,
-  getDoc,
-  onSnapshot,
-  limit,
-  orderBy,
-  query,
   setDoc,
-  updateDoc
+  getDocs,
+  updateDoc,
+  deleteDoc
 } from "firebase/firestore";
 
 import { Book } from "./Book";
@@ -62,4 +55,10 @@ export async function toggleReadFS(db: Firestore, userID: string, book: Book) {
 }
 
 // remove book from Firestore
-export async function removeBookFS(db: Firestore, userID: string, key: string) {}
+export async function removeBookFS(db: Firestore, userID: string, book: Book) {
+  try {
+    await deleteDoc(doc(db, `userID-${userID}`, book.key));
+  } catch (error) {
+    console.error("Error deleting book in Firebase Database", error);
+  }
+}
