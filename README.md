@@ -1,6 +1,6 @@
 # objects-library
 
-Simple library. You can add books, mark them as read and remove them. You can log in with google account to save the data to Firebase Firestore.
+Simple library. You can add books, mark them as read and remove them. You can log in with google account to save the data to Firebase backend.
 
 Check it out here: https://objects-library.web.app/
 
