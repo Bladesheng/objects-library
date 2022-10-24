@@ -177,8 +177,9 @@ function createBookCardElement(book: Book) {
     readCheckbox.checked = true;
   }
   // toggling read status of the object with the checkbox
-  readCheckbox.addEventListener("click", () => {
-    toggleReadFS(key);
+  readCheckbox.addEventListener("change", () => {
+    book.read = readCheckbox.checked;
+    toggleReadFS(db, userID, book);
   });
   round.appendChild(readCheckbox);
 
@@ -191,7 +192,7 @@ function createBookCardElement(book: Book) {
   removeBtn.addEventListener("click", () => {
     bookCard.remove();
 
-    removeBookFS(key);
+    //removeBookFS(key);
   });
   buttonsWrapper.appendChild(removeBtn);
 
@@ -236,7 +237,7 @@ const readInput: HTMLInputElement = document.querySelector("#read");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const key = "k" + Date.now();
+  const key = "bookKey-" + Date.now();
 
   const newBook = new Book(
     titleInput.value,

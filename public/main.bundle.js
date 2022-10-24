@@ -33260,12 +33260,12 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 // save new book to Firestore
 function saveBookFS(book, db, userID) {
     return __awaiter(this, void 0, void 0, function () {
-        var docRef, error_1;
+        var error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.addDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, "books-" + userID), {
+                    return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.setDoc)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.doc)(db, "userID-".concat(userID), book.key), {
                             title: book.title,
                             author: book.author,
                             pages: book.pages,
@@ -33273,8 +33273,7 @@ function saveBookFS(book, db, userID) {
                             key: book.key
                         })];
                 case 1:
-                    docRef = _a.sent();
-                    console.log("Document written with ID: ", docRef.id);
+                    _a.sent();
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
@@ -33285,25 +33284,13 @@ function saveBookFS(book, db, userID) {
         });
     });
 }
-// toggle read status in Firestore
-function toggleReadFS(key) {
-    return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); });
-}
-// remove book from Firestore
-function removeBookFS(key) {
-    return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); });
-}
 // return all books saved in Firestore
 function getBooksFS(db, userID) {
     return __awaiter(this, void 0, void 0, function () {
         var querySnapshot, retrievedBooks;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.getDocs)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, "books-" + userID))];
+                case 0: return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.getDocs)((0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.collection)(db, "userID-" + userID))];
                 case 1:
                     querySnapshot = _a.sent();
                     retrievedBooks = [];
@@ -33315,6 +33302,36 @@ function getBooksFS(db, userID) {
             }
         });
     });
+}
+// toggle read status in Firestore
+function toggleReadFS(db, userID, book) {
+    return __awaiter(this, void 0, void 0, function () {
+        var docRef, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    docRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.doc)(db, "userID-".concat(userID), book.key);
+                    return [4 /*yield*/, (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_0__.updateDoc)(docRef, {
+                            read: book.read
+                        })];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.error("Error updating read status in Firebase Database", error_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+// remove book from Firestore
+function removeBookFS(db, userID, key) {
+    return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/];
+    }); });
 }
 
 
@@ -35547,8 +35564,9 @@ function createBookCardElement(book) {
         readCheckbox.checked = true;
     }
     // toggling read status of the object with the checkbox
-    readCheckbox.addEventListener("click", function () {
-        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.toggleReadFS)(key);
+    readCheckbox.addEventListener("change", function () {
+        book.read = readCheckbox.checked;
+        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.toggleReadFS)(db, userID, book);
     });
     round.appendChild(readCheckbox);
     var readCheckboxLabel = document.createElement("label");
@@ -35558,7 +35576,7 @@ function createBookCardElement(book) {
     removeBtn.classList.add("remove");
     removeBtn.addEventListener("click", function () {
         bookCard.remove();
-        (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.removeBookFS)(key);
+        //removeBookFS(key);
     });
     buttonsWrapper.appendChild(removeBtn);
     var SVG_NS = "http://www.w3.org/2000/svg";
@@ -35590,7 +35608,7 @@ var pagesInput = document.querySelector("#pages");
 var readInput = document.querySelector("#read");
 form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var key = "k" + Date.now();
+    var key = "bookKey-" + Date.now();
     var newBook = new _modules_Book__WEBPACK_IMPORTED_MODULE_1__.Book(titleInput.value, authorInput.value, parseInt(pagesInput.value), readInput.checked, key);
     createBookCardElement(newBook);
     (0,_modules_firestoreAPI__WEBPACK_IMPORTED_MODULE_4__.saveBookFS)(newBook, db, userID);

@@ -21,28 +21,21 @@ import { Book } from "./Book";
 export async function saveBookFS(book: Book, db: Firestore, userID: string) {
   // Add a new message entry to the Firebase database.
   try {
-    const docRef = await addDoc(collection(db, "books-" + userID), {
+    await setDoc(doc(db, `userID-${userID}`, book.key), {
       title: book.title,
       author: book.author,
       pages: book.pages,
       read: book.read,
       key: book.key
     });
-    console.log("Document written with ID: ", docRef.id);
   } catch (error) {
     console.error("Error writing new book to Firebase Database", error);
   }
 }
 
-// toggle read status in Firestore
-export async function toggleReadFS(key: string) {}
-
-// remove book from Firestore
-export async function removeBookFS(key: string) {}
-
 // return all books saved in Firestore
 export async function getBooksFS(db: Firestore, userID: string) {
-  const querySnapshot = await getDocs(collection(db, "books-" + userID));
+  const querySnapshot = await getDocs(collection(db, "userID-" + userID));
 
   const retrievedBooks: Book[] = [];
 
@@ -54,3 +47,19 @@ export async function getBooksFS(db: Firestore, userID: string) {
 
   return retrievedBooks;
 }
+
+// toggle read status in Firestore
+export async function toggleReadFS(db: Firestore, userID: string, book: Book) {
+  try {
+    const docRef = doc(db, `userID-${userID}`, book.key);
+
+    await updateDoc(docRef, {
+      read: book.read
+    });
+  } catch (error) {
+    console.error("Error updating read status in Firebase Database", error);
+  }
+}
+
+// remove book from Firestore
+export async function removeBookFS(db: Firestore, userID: string, key: string) {}
