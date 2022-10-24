@@ -11,7 +11,7 @@ test("Create new Book instance", () => {
 });
 
 test("Change book from read to unread", () => {
-  const hobbit = new Book("The Hobbit", "Tolkien", 420, true);
+  const hobbit = new Book("The Hobbit", "Tolkien", 420, true, "k694201337");
 
   expect(hobbit.read).toBe(true);
 
